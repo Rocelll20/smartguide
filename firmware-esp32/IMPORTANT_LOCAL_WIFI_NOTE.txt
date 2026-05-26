@@ -1,0 +1,4 @@
+PUT_YOUR_WIFI_NAME_HERE Converge_2CHV
+PUT_YOUR_WIFI_PASSWORD_HERE 743625UY
+
+render url = https://smartguide-sj1d.onrender.com
