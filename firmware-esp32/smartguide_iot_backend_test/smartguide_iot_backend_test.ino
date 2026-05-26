@@ -1,16 +1,18 @@
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include <WiFiClientSecure.h>
 
 #define TRIG_PIN 5
 #define ECHO_PIN 18
 
-// Put your Converge 2.4GHz WiFi name and password here.
-// Do not send your password in chat.
-const char* WIFI_SSID = "Converge_2CHV";
-const char* WIFI_PASSWORD = "743625UY";
+// FINAL DEMO WIFI SETTINGS
+// Put your phone hotspot name and password here before uploading.
+// Do not push your real password to GitHub.
+const char* WIFI_SSID = "smartguide";
+const char* WIFI_PASSWORD = "123456789";
 
-// Your laptop IP from ipconfig:
-String BACKEND_URL = "https://smartguide-sj1d.onrender.com/iot/obstacle";
+// Render backend URL
+const char* BACKEND_URL = "https://smartguide-sj1d.onrender.com/iot/obstacle";
 
 String DEVICE_CODE = "SG-STICK-001";
 
@@ -18,7 +20,7 @@ long duration;
 float distanceCm;
 
 unsigned long lastSendTime = 0;
-const unsigned long sendCooldown = 3000; // send at most once every 3 seconds
+const unsigned long sendCooldown = 3000; // Send at most once every 3 seconds
 
 float readDistanceCm() {
   digitalWrite(TRIG_PIN, LOW);
@@ -55,8 +57,11 @@ void sendObstacleEvent(float distance) {
     return;
   }
 
+  WiFiClientSecure client;
+  client.setInsecure(); // Demo mode for HTTPS Render connection
+
   HTTPClient http;
-  http.begin(BACKEND_URL);
+  http.begin(client, BACKEND_URL);
   http.addHeader("Content-Type", "application/json");
 
   String jsonBody = "{";
@@ -90,11 +95,10 @@ void setup() {
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
 
-  Serial.println("SmartGuide ESP32 IoT Backend Test");
+  Serial.println("SmartGuide ESP32 IoT Final Demo");
+  Serial.println("Connecting to phone hotspot...");
 
   WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
-
-  Serial.print("Connecting to WiFi");
 
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
